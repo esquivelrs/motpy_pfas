@@ -10,6 +10,7 @@ Project is meant to provide a simple yet powerful baseline for multiple object t
 
 _video source: <https://motchallenge.net/data/MOT16/> - sequence 11_
 
+
 ## Features
 
     - tracking by detection paradigm

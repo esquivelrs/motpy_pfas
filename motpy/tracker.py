@@ -66,7 +66,11 @@ class SingleObjectTracker:
                  smooth_score_gamma: float = 0.8,
                  smooth_feature_gamma: float = 0.9,
                  score0: Optional[float] = None,
-                 class_id0: Optional[int] = None):
+                 class_id0: Optional[int] = None,
+                 cls: Optional[str] = None,
+                 seg_mask: Optional[np.ndarray] = None,
+                 points_3d: Optional[np.ndarray] = None,
+                 position: Optional[np.ndarray] = None):
         self.id: str = str(uuid.uuid4())
         self.steps_alive: int = 1
         self.steps_positive: int = 1
@@ -78,6 +82,10 @@ class SingleObjectTracker:
 
         self.score: Optional[float] = score0
         self.feature: Optional[Vector] = None
+        self.cls: Optional[str] = cls
+        self.seg_mask: Optional[np.ndarray] = seg_mask
+        self.points_3d: Optional[np.ndarray] = points_3d
+        self.position: Optional[np.ndarray] = position
 
         self.class_id_counts: Dict = dict()
         self.class_id: Optional[int] = self.update_class_id(class_id0)
@@ -136,7 +144,7 @@ class SingleObjectTracker:
         return self.staleness >= self.max_staleness
 
     def __repr__(self) -> str:
-        return f'(box: {str(self.box())}, score: {self.score}, class_id: {self.class_id}, staleness: {self.staleness:.2f})'
+        return f'(box: {str(self.box())}, score: {self.score}, class_id: {self.class_id}, cls: {self.cls}, staleness: {self.staleness:.2f})'
 
 
 class KalmanTracker(SingleObjectTracker):
@@ -372,7 +380,8 @@ class MultiObjectTracker:
             cond2 = tracker.staleness < max_staleness
             cond3 = tracker.steps_alive >= min_steps_alive
             if cond1 and cond2 and cond3:
-                tracks.append(Track(id=tracker.id, box=tracker.box(), score=tracker.score, class_id=tracker.class_id))
+                tracks.append(Track(id=tracker.id, box=tracker.box(), score=tracker.score, class_id=tracker.class_id, cls=tracker.cls, points_3d=tracker.points_3d, position=tracker.position))
+                #tracks.append(tracker)
 
         logger.debug('active/all tracks: %d/%d' % (len(self.trackers), len(tracks)))
         return tracks
@@ -416,6 +425,9 @@ class MultiObjectTracker:
             tracker = self.tracker_clss(box0=det.box,
                                         score0=det.score,
                                         class_id0=det.class_id,
+                                        cls=det.cls,
+                                        points_3d=det.points_3d,                                        
+                                        position=det.position,
                                         **self.tracker_kwargs)
             self.detections_matched_ids[det_idx] = tracker.id
             self.trackers.append(tracker)

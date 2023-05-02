@@ -15,7 +15,7 @@ Box = np.ndarray
 Vector = np.ndarray
 
 # Track is meant as an output from the object tracker
-Track = collections.namedtuple('Track', 'id box score class_id cls points_3d position')
+Track = collections.namedtuple('Track', 'id box score class_id cls points_3d position bbox_3d bbox_2d')
 
 
 # numpy/opencv image alias
@@ -32,7 +32,9 @@ class Detection:
             cls: Optional[str] = None,
             seg_mask: Optional[np.ndarray] = None,
             points_3d: Optional[np.ndarray] = None,
-            position: Optional[np.ndarray] = None):
+            position: Optional[np.ndarray] = None,
+            bbox_3d: Optional[np.ndarray] = None,
+            bbox_2d: Optional[np.ndarray] = None):
         self.box = box
         self.score = score
         self.class_id = class_id
@@ -41,6 +43,8 @@ class Detection:
         self.seg_mask = seg_mask
         self.points_3d = points_3d
         self.position = position
+        self.bbox_3d = bbox_3d
+        self.bbox_2d = bbox_2d
 
     def __repr__(self):
         return f'Detection(box={self.box}, score={self.score:.5f}, class_id={self.class_id}, feature={self.feature})'

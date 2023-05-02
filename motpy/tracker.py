@@ -70,7 +70,9 @@ class SingleObjectTracker:
                  cls: Optional[str] = None,
                  seg_mask: Optional[np.ndarray] = None,
                  points_3d: Optional[np.ndarray] = None,
-                 position: Optional[np.ndarray] = None):
+                 position: Optional[np.ndarray] = None,
+                 bbox_3d: Optional[np.ndarray] = None,
+                 bbox_2d: Optional[np.ndarray] = None):
         self.id: str = str(uuid.uuid4())
         self.steps_alive: int = 1
         self.steps_positive: int = 1
@@ -86,6 +88,8 @@ class SingleObjectTracker:
         self.seg_mask: Optional[np.ndarray] = seg_mask
         self.points_3d: Optional[np.ndarray] = points_3d
         self.position: Optional[np.ndarray] = position
+        self.bbox_3d: Optional[np.ndarray] = bbox_3d
+        self.bbox_2d: Optional[np.ndarray] = bbox_2d
 
         self.class_id_counts: Dict = dict()
         self.class_id: Optional[int] = self.update_class_id(class_id0)
@@ -380,7 +384,7 @@ class MultiObjectTracker:
             cond2 = tracker.staleness < max_staleness
             cond3 = tracker.steps_alive >= min_steps_alive
             if cond1 and cond2 and cond3:
-                tracks.append(Track(id=tracker.id, box=tracker.box(), score=tracker.score, class_id=tracker.class_id, cls=tracker.cls, points_3d=tracker.points_3d, position=tracker.position))
+                tracks.append(Track(id=tracker.id, box=tracker.box(), score=tracker.score, class_id=tracker.class_id, cls=tracker.cls, points_3d=tracker.points_3d, position=tracker.position, bbox_3d=tracker.bbox_3d, bbox_2d=tracker.bbox_2d))
                 #tracks.append(tracker)
 
         logger.debug('active/all tracks: %d/%d' % (len(self.trackers), len(tracks)))
@@ -427,7 +431,9 @@ class MultiObjectTracker:
                                         class_id0=det.class_id,
                                         cls=det.cls,
                                         points_3d=det.points_3d,                                        
-                                        position=det.position,
+                                        position=det.position,                                        
+                                        bbox_3d=det.bbox_3d,                                        
+                                        bbox_2d=det.bbox_2d,
                                         **self.tracker_kwargs)
             self.detections_matched_ids[det_idx] = tracker.id
             self.trackers.append(tracker)

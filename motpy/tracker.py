@@ -132,6 +132,11 @@ class SingleObjectTracker:
         self.class_id = self.update_class_id(detection.class_id)
         self.score = self.update_score_fn(old=self.score, new=detection.score)
         self.feature = self.update_feature_fn(old=self.feature, new=detection.feature)
+        
+        self.points_3d = detection.points_3d
+        self.position = detection.position
+        self.bbox_3d = detection.bbox_3d
+        self.bbox_2d = detection.bbox_2d
 
         # reduce the staleness of a tracker, faster than growth rate
         self.unstale(rate=3)

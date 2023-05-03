@@ -140,6 +140,7 @@ class Model:
         for 2d-1ord+2d-0ord case returns np.array([cx, 0, 0, cy, 0, 0, w, h]) """
         x = np.zeros((self.state_length,))
         x[self.z_in_x_idxs] = self.box_to_z(box)
+        print(x)
         return x
 
     def x_to_box(self, x):

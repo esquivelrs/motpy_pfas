@@ -243,7 +243,7 @@ def cost_matrix_iou_feature(trackers: Sequence[SingleObjectTracker],
     # box iou
     inferred_dim = int(len(b1[0]) / 2)
     iou_mat = calculate_iou(b1, b2, dim=inferred_dim)
-
+    #print("iou_mat", iou_mat)
     # feature similarity
     if feature_similarity_beta is not None:
         # get features

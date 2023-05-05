@@ -134,7 +134,7 @@ class SingleObjectTracker:
         self.feature = self.update_feature_fn(old=self.feature, new=detection.feature)
         
         self.points_3d = detection.points_3d
-        self.position = detection.position
+        self.position = np.vstack((self.position, detection.position))
         self.bbox_3d = detection.bbox_3d
         self.bbox_2d = detection.bbox_2d
 
@@ -319,6 +319,8 @@ class IOUAndFeatureMatchingFunction(BaseMatchingFunction):
     def __call__(self,
                  trackers: Sequence[SingleObjectTracker],
                  detections: Sequence[Detection]) -> np.ndarray:
+        
+        print("HEREEEEE, ", self.min_iou)
         return match_by_cost_matrix(
             trackers, detections,
             min_iou=self.min_iou,
